@@ -1117,9 +1117,15 @@ initializeKeys();
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/courses', courseRoutes);
-app.use("/" ,(res,req)=>{
-res.json({msg:"Welcome to LMS backend Api"})
-})
+
+
+app.get('/', async (req, res) => {
+  try {
+   res.send("welcome to movies api");
+  } catch (err) {
+    res.status(500).json({message:"something wrong "});
+  }
+});
 // app.use('/api/superadmin', superadminRoutes);
 
 // Start server
