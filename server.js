@@ -1123,7 +1123,8 @@ res.json({msg:"Welcome to LMS backend Api"})
 // app.use('/api/superadmin', superadminRoutes);
 
 // Start server
-app.listen(PORT, () => console.log(`Server started successfully on port ${PORT}`));
+// app.listen(PORT, () => console.log(`Server started successfully on port ${PORT}`));
+module.exports = app;
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
