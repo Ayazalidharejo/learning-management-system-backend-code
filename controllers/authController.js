@@ -187,7 +187,7 @@ exports.forgotPassword = async (req, res) => {
       },
     });
 
-    const resetURL = `http://localhost:3000/reset-password/${token}`;
+    const resetURL = `https://learning-management-system-backend-code.vercel.app/reset-password/${token}`;
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
