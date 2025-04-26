@@ -1103,7 +1103,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors({ origin: ["http://localhost:3000"] }));
+app.use(cors({ origin: ["https://learning-management-system-backend-code-aiqn.vercel.app/","http://localhost:3000"] }));
 app.use(express.json());
 
 // Connect to MongoDB
@@ -1129,8 +1129,8 @@ app.get('/', async (req, res) => {
 // app.use('/api/superadmin', superadminRoutes);
 
 // Start server
-// app.listen(PORT, () => console.log(`Server started successfully on port ${PORT}`));
-module.exports = app;
+app.listen(PORT, () => console.log(`Server started successfully on port ${PORT}`));
+// module.exports = app;
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
