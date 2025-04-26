@@ -7,11 +7,11 @@ const User = require('../models/User');
 const AccessKey = require('../models/AccessKey');
 require('dotenv').config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_default_jwt_secret';
+const JWT_SECRET = process.env.JWT_SECRET ;
 
 // Register Controller
 exports.register = async (req, res) => {
-  console.log('Register API called with body:', req.body);
+ 
   const { name, email, password, role = 'student', accessKey } = req.body;
 
   // Basic Input Validation
@@ -26,7 +26,7 @@ exports.register = async (req, res) => {
     // 1. Check if user already exists
     let user = await User.findOne({ email: email.toLowerCase() });
     if (user) {
-      console.log(`Registration failed: User already exists with email ${email}`);
+   
       return res.status(400).json({ msg: 'User already exists with this email' });
     }
 
@@ -34,7 +34,7 @@ exports.register = async (req, res) => {
     let assignedRole = role;
     if (role === 'admin' || role === 'superadmin') {
       if (!accessKey) {
-        console.log(`Registration failed: Access key required for role ${role}`);
+     
         return res.status(400).json({ 
           msg: `Access key is required for the '${role}' role` 
         });
@@ -42,7 +42,7 @@ exports.register = async (req, res) => {
 
       const validKey = await AccessKey.findOne({ key: accessKey, role: role });
       if (!validKey) {
-        console.log(`Registration failed: Invalid access key '${accessKey}' for role ${role}`);
+   
         return res.status(400).json({ msg: 'Invalid access key for the specified role' });
       }
       assignedRole = role;
@@ -66,7 +66,7 @@ exports.register = async (req, res) => {
 
     // 5. Save user to database
     await user.save();
-    console.log(`User registered successfully: ${user.email} (ID: ${user.id})`);
+  
 
     // 6. Create JWT Payload
     const payload = {
@@ -83,20 +83,20 @@ exports.register = async (req, res) => {
       { expiresIn: '1h' },
       (err, token) => {
         if (err) throw err;
-        console.log(`JWT generated for user ${user.id}. Sending response.`);
+    
         res.status(201).json({ token, role: user.role });
       }
     );
   } catch (err) {
-    console.error('Error during registration:', err.message);
-    console.error(err.stack);
+   
+
     res.status(500).json({ msg: 'Server error during registration' });
   }
 };
 
 // Login Controller
 exports.login = async (req, res) => {
-  console.log('Login API called with body:', req.body);
+  
   const { email, password } = req.body;
 
   // Basic Input Validation
@@ -141,7 +141,7 @@ exports.login = async (req, res) => {
       }
     );
   } catch (err) {
-    console.error('Error during login:', err.message);
+    
     console.error(err.stack);
     res.status(500).json({ msg: 'Server error during login' });
   }
@@ -152,7 +152,7 @@ exports.getCurrentUser = async (req, res) => {
   try {
     res.json(req.user);
   } catch (err) {
-    console.error('Error fetching current user:', err.message);
+   
     res.status(500).send('Server error');
   }
 };
@@ -203,12 +203,12 @@ exports.forgotPassword = async (req, res) => {
 
     // Send email
     await transporter.sendMail(mailOptions);
-    console.log(`✅ Email sent to ${user.email} with reset link.`);
+  
 
     res.status(200).json({ message: 'Password reset email sent successfully.' });
 
   } catch (err) {
-    console.error('Error in forgot-password:', err);
+    
     res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 };
@@ -217,7 +217,7 @@ exports.forgotPassword = async (req, res) => {
 exports.verifyResetToken = async (req, res) => {
   try {
     const { token } = req.params;
-    console.log("Token received for verification:", token);
+  
     
     // Add validation for token format
     if (!token || token.length < 20) {
@@ -235,7 +235,7 @@ exports.verifyResetToken = async (req, res) => {
     
     res.json({ valid: true, message: 'Token is valid' });
   } catch (err) {
-    console.error('Error verifying token:', err);
+  
     res.status(500).json({ valid: false, message: 'Server error' });
   }
 };
@@ -271,7 +271,7 @@ exports.resetPassword = async (req, res) => {
     user.resetTokenExpiry = undefined;
     await user.save();
     
-    console.log(`Password reset successful for user: ${user.email}`);
+ 
     res.json({ message: 'Password has been reset successfully' });
   } catch (err) {
     console.error('Error resetting password:', err);

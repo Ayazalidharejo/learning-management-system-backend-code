@@ -1117,7 +1117,7 @@ initializeKeys();
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/courses', courseRoutes);
-app.use('/api/superadmin', superadminRoutes);
+// app.use('/api/superadmin', superadminRoutes);
 
 // Start server
 app.listen(PORT, () => console.log(`Server started successfully on port ${PORT}`));

@@ -82,14 +82,10 @@ const router = express.Router();
 const { auth, checkRole } = require('../middleware/auth');
 const { removeAdmin, getAllAdmins } = require('../controllers/superadminController');
 
-// @route   GET /api/superadmin/admins
-// @desc    Get all admins
-// @access  Private/SuperAdmin
+
 router.get('/admins', [auth, checkRole(['superadmin'])], getAllAdmins);
 
-// @route   DELETE /api/superadmin/admins/:id
-// @desc    Remove an admin (either delete or downgrade to student)
-// @access  Private/SuperAdmin
+
 router.delete('/admins/:id', [auth, checkRole(['superadmin'])], removeAdmin);
 
 module.exports = router;
