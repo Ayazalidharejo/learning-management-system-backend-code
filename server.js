@@ -1117,6 +1117,9 @@ initializeKeys();
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/courses', courseRoutes);
+app.use("/" ,(res,req)=>{
+res.json({msg:"Welcome to LMS backend Api"})
+})
 // app.use('/api/superadmin', superadminRoutes);
 
 // Start server
