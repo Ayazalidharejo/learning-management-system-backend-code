@@ -214,13 +214,43 @@ exports.forgotPassword = async (req, res) => {
 };
 
 // Verify Reset Token
+// exports.verifyResetToken = async (req, res) => {
+//   try {
+//     const { token } = req.params;
+  
+    
+//     // Add validation for token format
+//     if (!token || token.length < 20) {
+//       return res.status(400).json({ valid: false, message: 'Invalid token format' });
+//     }
+    
+//     const user = await User.findOne({
+//       resetToken: token,
+//       resetTokenExpiry: { $gt: Date.now() }
+//     });
+    
+//     if (!user) {
+//       return res.status(400).json({ valid: false, message: 'Invalid or expired reset token' });
+//     }
+    
+//     res.json({ valid: true, message: 'Token is valid' });
+//   } catch (err) {
+  
+//     res.status(500).json({ valid: false, message: 'Server error' });
+//   }
+// };
+
+
+
+// Verify Reset Token
 exports.verifyResetToken = async (req, res) => {
   try {
     const { token } = req.params;
-  
+    console.log(`Verifying token: ${token}`);
     
     // Add validation for token format
     if (!token || token.length < 20) {
+      console.log('Invalid token format');
       return res.status(400).json({ valid: false, message: 'Invalid token format' });
     }
     
@@ -230,15 +260,20 @@ exports.verifyResetToken = async (req, res) => {
     });
     
     if (!user) {
+      console.log('Token not found or expired');
       return res.status(400).json({ valid: false, message: 'Invalid or expired reset token' });
     }
     
+    console.log(`Valid token found for user: ${user.email}`);
     res.json({ valid: true, message: 'Token is valid' });
   } catch (err) {
-  
+    console.error('Error verifying reset token:', err);
     res.status(500).json({ valid: false, message: 'Server error' });
   }
 };
+
+
+
 
 // Reset Password
 exports.resetPassword = async (req, res) => {
