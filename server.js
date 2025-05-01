@@ -1136,11 +1136,6 @@ app.get('/', async (req, res) => {
 
 
 
-
-
-
-
-
 // Add this to your routes:
 router.get('/debug-token/:token', async (req, res) => {
   try {
@@ -1172,22 +1167,6 @@ router.get('/debug-token/:token', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // app.use('/api/superadmin', superadminRoutes);
 
 // Start server
