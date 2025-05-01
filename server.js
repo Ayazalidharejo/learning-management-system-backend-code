@@ -1126,6 +1126,68 @@ app.get('/', async (req, res) => {
     res.status(500).json({message:"something wrong "});
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Add this to your routes:
+router.get('/debug-token/:token', async (req, res) => {
+  try {
+    const { token } = req.params;
+    const user = await User.findOne({ resetToken: token });
+    
+    if (!user) {
+      return res.json({ found: false, message: 'No user found with this token' });
+    }
+    
+    const currentTime = Date.now();
+    const tokenExpiry = user.resetTokenExpiry.getTime();
+    const isValid = tokenExpiry > currentTime;
+    
+    res.json({
+      found: true,
+      valid: isValid,
+      currentTime: new Date(currentTime).toISOString(),
+      expiryTime: new Date(tokenExpiry).toISOString(),
+      timeRemaining: Math.floor((tokenExpiry - currentTime) / 1000 / 60) + ' minutes',
+      user: {
+        id: user._id,
+        email: user.email,
+        resetToken: user.resetToken,
+        resetTokenExpiry: user.resetTokenExpiry
+      }
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // app.use('/api/superadmin', superadminRoutes);
 
 // Start server
