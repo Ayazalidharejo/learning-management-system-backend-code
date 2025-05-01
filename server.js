@@ -1121,7 +1121,7 @@ app.use('/api/courses', courseRoutes);
 
 app.get('/', async (req, res) => {
   try {
-   res.send("welcome to movies api");
+   res.send("welcome to lMS api");
   } catch (err) {
     res.status(500).json({message:"something wrong "});
   }
@@ -1129,8 +1129,8 @@ app.get('/', async (req, res) => {
 // app.use('/api/superadmin', superadminRoutes);
 
 // Start server
-app.listen(PORT, () => console.log(`Server started successfully on port ${PORT}`));
-// module.exports = app;
+// app.listen(PORT, () => console.log(`Server started successfully on port ${PORT}`));
+module.exports = app;
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
