@@ -187,7 +187,10 @@ exports.forgotPassword = async (req, res) => {
       },
     });
 
-    const resetURL = `https://learning-management-system-backend-code-aiqn.vercel.app/reset-password/${token}`;
+    // const resetURL = `https://learning-management-system-backend-code-aiqn.vercel.app/reset-password/${token}`;
+    const resetURL = `https://learning-management-system-frontend.vercel.app/reset-password/${token}`;
+
+
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -275,6 +278,6 @@ exports.resetPassword = async (req, res) => {
     res.json({ message: 'Password has been reset successfully' });
   } catch (err) {
     console.error('Error resetting password:', err);
-    res.status(500).json({ message: 'Server error. Try again later.' });
+    res.status(500).json({ message: 'Server error. Try again later. ayaz' });
   }
 };
