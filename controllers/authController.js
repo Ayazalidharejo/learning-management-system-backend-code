@@ -158,207 +158,6 @@ exports.getCurrentUser = async (req, res) => {
 };
 
 // Forgot Password
-// exports.forgotPassword = async (req, res) => {
-//   const { email } = req.body;
-//   const sanitizedEmail = email.trim().toLowerCase();
-
-//   try {
-//     const user = await User.findOne({ email: sanitizedEmail });
-
-//     if (!user) {
-//       // Don't reveal if user exists for security reasons
-//       return res.status(200).json({ 
-//         message: 'If this email exists, password reset instructions have been provided.' 
-//       });
-//     }
-
-//     // Generate token
-//     const token = crypto.randomBytes(20).toString('hex');
-//     user.resetToken = token;
-//     user.resetTokenExpiry = Date.now() + 3600000; // 1 hour
-//     await user.save();
-
-//     // Setup Nodemailer
-//     const transporter = nodemailer.createTransport({
-//       service: 'Gmail',
-//       auth: {
-//         user: process.env.EMAIL_USER,
-//         pass: process.env.EMAIL_PASS,
-//       },
-//     });
-
-//     const resetURL = `https://learning-management-system-backend-code-aiqn.vercel.app/reset-password/${token}`;
-
-//     const mailOptions = {
-//       from: process.env.EMAIL_USER,
-//       to: user.email,
-//       subject: 'Reset your password',
-//       html: `
-//         <p>Hi ${user.name},</p>
-//         <p>You requested to reset your password.</p>
-//         <p><a href="${resetURL}">Click here to reset your password</a></p>
-//         <p>This link will expire in 1 hour.</p>
-//       `,
-//     };
-
-//     // Send email
-//     await transporter.sendMail(mailOptions);
-  
-
-//     res.status(200).json({ message: 'Password reset email sent successfully.' });
-
-//   } catch (err) {
-    
-//     res.status(500).json({ message: 'Server error. Please try again later.' });
-//   }
-// };
-
-// // Verify Reset Token
-// exports.verifyResetToken = async (req, res) => {
-//   try {
-//     const { token } = req.params;
-  
-    
-//     // Add validation for token format
-//     if (!token || token.length < 20) {
-//       return res.status(400).json({ valid: false, message: 'Invalid token format' });
-//     }
-    
-//     const user = await User.findOne({
-//       resetToken: token,
-//       resetTokenExpiry: { $gt: Date.now() }
-//     });
-    
-//     if (!user) {
-//       return res.status(400).json({ valid: false, message: 'Invalid or expired reset token' });
-//     }
-    
-//     res.json({ valid: true, message: 'Token is valid' });
-//   } catch (err) {
-  
-//     res.status(500).json({ valid: false, message: 'Server error' });
-//   }
-// };
-
-
-
-
-
-
-
-
-// Add these debug lines to verifyResetToken function in authController.js
-
-exports.verifyResetToken = async (req, res) => {
-  try {
-    const { token } = req.params;
-    
-    console.log("Received token for verification:", token);
-    
-    // Add validation for token format
-    if (!token || token.length < 20) {
-      console.log("Token validation failed: Invalid format");
-      return res.status(400).json({ valid: false, message: 'Invalid token format' });
-    }
-    
-    // Find user with this token
-    const user = await User.findOne({
-      resetToken: token,
-      resetTokenExpiry: { $gt: Date.now() }
-    });
-    
-    if (!user) {
-      // Debug - check if token exists but is expired
-      const expiredUser = await User.findOne({
-        resetToken: token
-      });
-      
-      if (expiredUser) {
-        console.log("Token found but expired. Expiry time:", new Date(expiredUser.resetTokenExpiry), "Current time:", new Date());
-        return res.status(400).json({ valid: false, message: 'Reset token has expired' });
-      } else {
-        console.log("Token not found in database");
-        return res.status(400).json({ valid: false, message: 'Invalid reset token' });
-      }
-    }
-    
-    console.log("Token verified successfully for user:", user.email);
-    res.json({ valid: true, message: 'Token is valid' });
-  } catch (err) {
-    console.error('Error in verifyResetToken:', err);
-    res.status(500).json({ valid: false, message: 'Server error' });
-  }
-};
-
-// Add these debug lines to forgotPassword function in authController.js
-
-// exports.forgotPassword = async (req, res) => {
-//   const { email } = req.body;
-//   const sanitizedEmail = email.trim().toLowerCase();
-  
-//   console.log("Forgot password request for email:", sanitizedEmail);
-
-//   try {
-//     const user = await User.findOne({ email: sanitizedEmail });
-
-//     if (!user) {
-//       console.log("User not found for email:", sanitizedEmail);
-//       // Don't reveal if user exists for security reasons
-//       return res.status(200).json({ 
-//         message: 'If this email exists, password reset instructions have been provided.' 
-//       });
-//     }
-
-//     console.log("User found, generating reset token");
-    
-//     // Generate token
-//     const token = crypto.randomBytes(20).toString('hex');
-//     console.log("Generated token:", token);
-    
-//     user.resetToken = token;
-//     user.resetTokenExpiry = Date.now() + 3600000; // 1 hour
-//     console.log("Token expiry set to:", new Date(user.resetTokenExpiry));
-    
-//     await user.save();
-//     console.log("User saved with reset token");
-
-//     // Setup Nodemailer
-//     const transporter = nodemailer.createTransport({
-//       service: 'Gmail',
-//       auth: {
-//         user: process.env.EMAIL_USER,
-//         pass: process.env.EMAIL_PASS,
-//       },
-//     });
-
-//     // IMPORTANT: Make sure this URL points to your frontend application, not the backend API
-//     const resetURL = `https://learning-management-system-frontend.vercel.app/reset-password/${token}`;
-//     console.log("Reset URL created:", resetURL);
-
-//     const mailOptions = {
-//       from: process.env.EMAIL_USER,
-//       to: user.email,
-//       subject: 'Reset your password',
-//       html: `
-//         <p>Hi ${user.name},</p>
-//         <p>You requested to reset your password.</p>
-//         <p><a href="${resetURL}">Click here to reset your password</a></p>
-//         <p>This link will expire in 1 hour.</p>
-//       `,
-//     };
-
-//     // Send email
-//     console.log("Attempting to send email to:", user.email);
-//     await transporter.sendMail(mailOptions);
-//     console.log("Email sent successfully");
-
-//     res.status(200).json({ message: 'Password reset email sent successfully.' });
-
-//   } catch (err) {
-//     console.error("Error in forgotPassword:", err);
-//     res.status(500).json({ message: 'Server error. Please try again later.' });
-//   }
-// };
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
   const sanitizedEmail = email.trim().toLowerCase();
@@ -388,9 +187,7 @@ exports.forgotPassword = async (req, res) => {
       },
     });
 
-    // CRITICAL: This must point to your FRONTEND URL, not backend
-    // This is where the reset password React component is rendered
-    const resetURL = `https://your-frontend-url.vercel.app/reset-password/${token}`;
+    const resetURL = `https://learning-management-system-backend-code-aiqn.vercel.app/reset-password/${token}`;
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -406,15 +203,42 @@ exports.forgotPassword = async (req, res) => {
 
     // Send email
     await transporter.sendMail(mailOptions);
+  
 
     res.status(200).json({ message: 'Password reset email sent successfully.' });
 
   } catch (err) {
+    
     res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 };
 
-
+// Verify Reset Token
+exports.verifyResetToken = async (req, res) => {
+  try {
+    const { token } = req.params;
+  
+    
+    // Add validation for token format
+    if (!token || token.length < 20) {
+      return res.status(400).json({ valid: false, message: 'Invalid token format' });
+    }
+    
+    const user = await User.findOne({
+      resetToken: token,
+      resetTokenExpiry: { $gt: Date.now() }
+    });
+    
+    if (!user) {
+      return res.status(400).json({ valid: false, message: 'Invalid or expired reset token' });
+    }
+    
+    res.json({ valid: true, message: 'Token is valid' });
+  } catch (err) {
+  
+    res.status(500).json({ valid: false, message: 'Server error' });
+  }
+};
 
 // Reset Password
 exports.resetPassword = async (req, res) => {
