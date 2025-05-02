@@ -187,10 +187,7 @@ exports.forgotPassword = async (req, res) => {
       },
     });
 
-    // const resetURL = `https://learning-management-system-backend-code-aiqn.vercel.app/reset-password/${token}`;
-    const resetURL = `https://learning-management-system-frontend.vercel.app/reset-password/${token}`;
-
-
+    const resetURL = `https://learning-management-system-backend-code-aiqn.vercel.app/reset-password/${token}`;
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
