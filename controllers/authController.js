@@ -213,129 +213,45 @@ exports.forgotPassword = async (req, res) => {
   }
 };
 
-// // Verify Reset Token
-// exports.verifyResetToken = async (req, res) => {
-//   try {
-//     const { token } = req.params;
-  
-    
-//     // Add validation for token format
-//     if (!token || token.length < 20) {
-//       return res.status(400).json({ valid: false, message: 'Invalid token format' });
-//     }
-    
-//     const user = await User.findOne({
-//       resetToken: token,
-//       resetTokenExpiry: { $gt: Date.now() }
-//     });
-    
-//     if (!user) {
-//       return res.status(400).json({ valid: false, message: 'Invalid or expired reset token' });
-//     }
-    
-//     res.json({ valid: true, message: 'Token is valid' });
-//   } catch (err) {
-  
-//     res.status(500).json({ valid: false, message: 'Server error' });
-//   }
-// };
-
-// // Reset Password
-// exports.resetPassword = async (req, res) => {
-//   try {
-//     const { token } = req.params;
-//     const { password, confirmPassword } = req.body;
-    
-//     // Added password confirmation check
-//     if (password !== confirmPassword) {
-//       return res.status(400).json({ message: 'Passwords do not match' });
-//     }
-    
-//     if (!password || password.length < 6) {
-//       return res.status(400).json({ message: 'Password must be at least 6 characters long' });
-//     }
-    
-//     const user = await User.findOne({
-//       resetToken: token,
-//       resetTokenExpiry: { $gt: Date.now() }
-//     });
-    
-//     if (!user) {
-//       return res.status(400).json({ message: 'Password reset token is invalid or has expired' });
-//     }
-    
-//     // Hash new password
-//     const salt = await bcrypt.genSalt(10);
-//     user.password = await bcrypt.hash(password, salt);
-//     user.resetToken = undefined;
-//     user.resetTokenExpiry = undefined;
-//     await user.save();
-    
- 
-//     res.json({ message: 'Password has been reset successfully' });
-//   } catch (err) {
-//     console.error('Error resetting password:', err);
-//     res.status(500).json({ message: 'Server error. Try again later. ayaz' });
-//   }
-// };
-
-
-
-// Verify Reset Token - Fixed version
+// Verify Reset Token
 exports.verifyResetToken = async (req, res) => {
   try {
     const { token } = req.params;
-    
-    console.log(`Verifying reset token: ${token}`);
+  
     
     // Add validation for token format
     if (!token || token.length < 20) {
-      console.log('Invalid token format');
       return res.status(400).json({ valid: false, message: 'Invalid token format' });
     }
     
-    // Find user with this token and check if token has expired
     const user = await User.findOne({
       resetToken: token,
       resetTokenExpiry: { $gt: Date.now() }
     });
     
     if (!user) {
-      console.log('Token validation failed: Invalid or expired token');
-      return res.status(400).json({ 
-        valid: false, 
-        message: 'Invalid or expired reset token',
-        debug: { 
-          tokenProvided: token,
-          currentTime: Date.now()
-        }
-      });
+      return res.status(400).json({ valid: false, message: 'Invalid or expired reset token' });
     }
     
-    console.log(`Token validation successful for user: ${user.email}`);
     res.json({ valid: true, message: 'Token is valid' });
   } catch (err) {
-    console.error('Error verifying reset token:', err);
+  
     res.status(500).json({ valid: false, message: 'Server error' });
   }
 };
 
-// Reset Password - Fixed version
+// Reset Password
 exports.resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
     const { password, confirmPassword } = req.body;
     
-    console.log(`Processing password reset for token: ${token}`);
-    
     // Added password confirmation check
     if (password !== confirmPassword) {
-      console.log('Password reset failed: Passwords do not match');
       return res.status(400).json({ message: 'Passwords do not match' });
     }
     
     if (!password || password.length < 6) {
-      console.log('Password reset failed: Password too short');
       return res.status(400).json({ message: 'Password must be at least 6 characters long' });
     }
     
@@ -345,27 +261,17 @@ exports.resetPassword = async (req, res) => {
     });
     
     if (!user) {
-      console.log('Password reset failed: Invalid or expired token');
-      return res.status(400).json({ 
-        message: 'Password reset token is invalid or has expired',
-        debug: {
-          tokenProvided: token,
-          currentTime: Date.now()
-        }
-      });
+      return res.status(400).json({ message: 'Password reset token is invalid or has expired' });
     }
     
     // Hash new password
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
-    
-    // Clear reset token fields
     user.resetToken = undefined;
     user.resetTokenExpiry = undefined;
-    
     await user.save();
     
-    console.log(`Password reset successful for user: ${user.email}`);
+ 
     res.json({ message: 'Password has been reset successfully' });
   } catch (err) {
     console.error('Error resetting password:', err);
