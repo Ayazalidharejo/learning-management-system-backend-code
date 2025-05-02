@@ -198,6 +198,7 @@ exports.forgotPassword = async (req, res) => {
         <p>You requested to reset your password.</p>
         <p><a href="${resetURL}">Click here to reset your password</a></p>
         <p>This link will expire in 1 hour.</p>
+        <> This is LINK from frontend  </>
       `,
     };
 
