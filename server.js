@@ -43,7 +43,7 @@ app.get('/', async (req, res) => {
 
 
 // Start server
-// app.listen(PORT, () => console.log(`Server started successfully on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server started successfully on port ${PORT}`));
 module.exports = app;
 
 // Handle unhandled promise rejections
